@@ -1,0 +1,42 @@
+<header class="topbar">
+  <div class="brand">🔐 访问复核平台</div>
+  <nav>
+    <a routerLink="/dashboard" routerLinkActive="active">仪表盘</a>
+    <a routerLink="/campaigns" routerLinkActive="active">复核活动</a>
+    <a routerLink="/my-tasks" routerLinkActive="active">我的复核</a>
+    <a routerLink="/tasks" routerLinkActive="active">全部任务</a>
+    <a routerLink="/jobs" routerLinkActive="active">撤销作业</a>
+    <a routerLink="/org" routerLinkActive="active">组织架构</a>
+    <a routerLink="/audit" routerLinkActive="active">审计日志</a>
+  </nav>
+  <div class="right">
+    <button class="bell" (click)="showNotifications.set(!showNotifications())">
+      🔔 @if (notifications().length) { <span class="badge">{{ notifications().length }}</span> }
+    </button>
+    <label>
+      当前身份:
+      <select [ngModel]="session.currentUserId()" (ngModelChange)="onUserChange($event)">
+        @for (u of users(); track u.id) {
+          <option [value]="u.id">{{ u.name }} ({{ u.departmentName }})</option>
+        }
+      </select>
+    </label>
+  </div>
+</header>
+
+@if (showNotifications()) {
+  <div class="notif-panel">
+    <h4>站内通知</h4>
+    @if (!notifications().length) { <p class="muted">暂无通知</p> }
+    @for (n of notifications(); track n.id) {
+      <div class="notif">
+        <span class="time">{{ n.at | date:'MM-dd HH:mm:ss' }}</span>
+        <span>{{ n.message }}</span>
+      </div>
+    }
+  </div>
+}
+
+<main>
+  <router-outlet />
+</main>
